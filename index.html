@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ข้อสอบกลางภาค ว22104 วิทยาการคำนวณ 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eef2f7;
+  --paper:#ffffff;
+  --ink:#1b2438;
+  --ink-soft:#5a6478;
+  --line:#3a4a63;
+  --blue:#2b6fb3;
+  --blue-soft:#e3eef9;
+  --green:#2e9e6f;
+  --green-soft:#e2f5ec;
+  --amber:#d99a2b;
+  --amber-soft:#fdf1de;
+  --red:#d1495b;
+  --red-soft:#fbe6e9;
+  --purple:#6a4fb0;
+  --purple-soft:#ece6f8;
+  --shadow:0 10px 28px rgba(27,36,56,.10);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:'Sarabun','IBM Plex Sans Thai',sans-serif;}
+h1,h2,h3{font-family:'IBM Plex Sans Thai',sans-serif;margin:0;}
+.hidden{display:none !important;}
+button{font-family:inherit;cursor:pointer;}
+input,textarea{font-family:inherit;}
+
+/* ============ TOP BAR ============ */
+#topbar{
+  position:sticky;top:0;z-index:50;
+  background:var(--line);color:#fff;
+  padding:10px 18px;display:flex;align-items:center;justify-content:space-between;
+  box-shadow:var(--shadow);flex-wrap:wrap;gap:8px;
+}
+#topbar .title{font-weight:700;font-size:15px;}
+#timerBox{
+  background:#24304a;border-radius:999px;padding:6px 18px;font-weight:700;font-size:18px;
+  display:flex;align-items:center;gap:8px;border:2px solid rgba(255,255,255,.15);
+}
+#timerBox.low{background:#7a1f2b;animation:pulseTimer 1s ease-in-out infinite;}
+@keyframes pulseTimer{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+#progressWrap{flex:1;min-width:160px;max-width:280px;height:10px;background:rgba(255,255,255,.18);border-radius:999px;overflow:hidden;}
+#progressBar{height:100%;background:linear-gradient(90deg,#5ec98f,#2e9e6f);width:0%;transition:width .3s ease;}
+
+/* ============ COVER SCREEN ============ */
+#coverScreen{max-width:640px;margin:40px auto;padding:0 16px;}
+.coverCard{background:var(--paper);border-radius:22px;box-shadow:var(--shadow);padding:34px 30px;border:1px solid #dbe3ee;}
+.coverCard h1{font-size:24px;color:var(--line);}
+.coverCard .sub{color:var(--ink-soft);margin-top:6px;font-size:15px;}
+.formRow{margin-top:18px;}
+.formRow label{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color:var(--line);}
+.formRow input{width:100%;padding:11px 14px;border-radius:12px;border:2px solid #d6dee9;font-size:16px;outline:none;transition:border .2s;}
+.formRow input:focus{border-color:var(--blue);}
+.formGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.infoBox{background:var(--blue-soft);border-radius:14px;padding:14px 18px;margin-top:20px;font-size:14px;color:var(--line);line-height:1.7;}
+.infoBox b{color:var(--blue);}
+#startBtn{
+  margin-top:24px;width:100%;padding:16px;border:none;border-radius:14px;
+  background:linear-gradient(135deg,var(--blue),#1d5490);color:#fff;font-size:18px;font-weight:700;
+  box-shadow:0 10px 24px rgba(43,111,179,.35);
+}
+#startBtn:disabled{background:#b7c1d1;box-shadow:none;cursor:not-allowed;}
+#startBtn:not(:disabled):hover{transform:translateY(-2px);}
+
+/* ============ EXAM SHELL ============ */
+#examScreen{max-width:880px;margin:0 auto;padding:20px 16px 100px;}
+.partHeader{
+  background:var(--paper);border-radius:16px;padding:18px 22px;margin:18px 0 14px;
+  box-shadow:var(--shadow);border-left:6px solid var(--blue);
+}
+.partHeader h2{font-size:19px;color:var(--line);}
+.partHeader p{margin:6px 0 0;color:var(--ink-soft);font-size:14px;}
+
+.qCard{
+  background:var(--paper);border-radius:16px;padding:20px 22px;margin-bottom:16px;
+  box-shadow:var(--shadow);border:1px solid #e2e8f1;
+}
+.qCard.answered{border-left:5px solid var(--green);}
+.qNum{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;font-weight:700;font-size:14px;
+  margin-right:8px;flex-shrink:0;
+}
+.qHead{display:flex;align-items:flex-start;gap:2px;margin-bottom:10px;}
+.qText{font-size:16px;line-height:1.7;font-weight:500;}
+.qScenario{
+  background:var(--amber-soft);border-left:4px solid var(--amber);border-radius:10px;
+  padding:10px 14px;margin:10px 0 14px 38px;font-size:14.5px;line-height:1.7;color:#5c4519;
+}
+.qPseudo{
+  background:#f4f6fa;border:1.5px dashed #aab6c9;border-radius:10px;
+  padding:12px 16px;margin:10px 0 14px 38px;font-family:'Courier New',monospace;font-size:14.5px;
+  line-height:1.9;white-space:pre-wrap;color:#24304a;
+}
+.optList{display:flex;flex-direction:column;gap:9px;margin-left:38px;}
+.optItem{
+  display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border-radius:12px;
+  border:2px solid #dbe3ee;background:#fbfcfe;transition:.15s;
+}
+.optItem:hover{border-color:var(--blue);background:var(--blue-soft);}
+.optItem.selected{border-color:var(--blue);background:var(--blue-soft);}
+.optLetter{
+  flex-shrink:0;width:26px;height:26px;border-radius:50%;border:2px solid #b7c1d1;
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--ink-soft);
+}
+.optItem.selected .optLetter{background:var(--blue);border-color:var(--blue);color:#fff;}
+.optText{font-size:15px;line-height:1.6;padding-top:2px;}
+
+/* ============ FLOWCHART DIAGRAM (read-only, generated) ============ */
+.fcWrap{margin:14px 0 16px 38px;background:#f7f9fc;border-radius:14px;padding:22px 16px;border:1px solid #dbe3ee;overflow-x:auto;}
+.fcChain{display:flex;flex-direction:column;align-items:center;}
+.fcShape{
+  min-width:150px;max-width:230px;padding:10px 16px;text-align:center;font-size:14px;
+  font-weight:600;color:var(--line);box-shadow:0 3px 8px rgba(0,0,0,.08);line-height:1.4;
+}
+.fcTerminal{background:var(--green-soft);border:2px solid var(--green);border-radius:999px;color:#1c6b47;}
+.fcProcess{background:var(--blue-soft);border:2px solid var(--blue);border-radius:6px;}
+.fcIO{background:var(--amber-soft);border:2px solid var(--amber);clip-path:polygon(8% 0,100% 0,92% 100%,0 100%);padding:10px 26px;}
+.fcDecision{background:var(--red-soft);border:2px solid var(--red);border-radius:6px;padding:16px 14px;position:relative;}
+.fcArrow{width:3px;height:26px;background:var(--line);position:relative;}
+.fcArrow::after{content:'';position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);
+  border-left:6px solid transparent;border-right:6px solid transparent;border-top:9px solid var(--line);}
+.fcBranchRow{display:flex;gap:34px;justify-content:center;}
+.fcBranchCol{display:flex;flex-direction:column;align-items:center;}
+.fcBranchLabel{font-weight:700;font-size:13px;padding:2px 12px;border-radius:999px;margin-bottom:6px;}
+.fcBranchLabel.yes{background:var(--green-soft);color:#1c6b47;}
+.fcBranchLabel.no{background:var(--red-soft);color:#a12f3f;}
+.fcMergeBar{height:3px;background:var(--line);margin-top:4px;}
+.fcSmall .fcShape{min-width:120px;font-size:12.5px;padding:8px 10px;}
+.fcSmall{transform:scale(.92);transform-origin:top center;}
+.fcOptGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-left:38px;margin-top:10px;}
+@media (max-width:640px){.fcOptGrid{grid-template-columns:1fr;}}
+.fcOptCard{border:2px solid #dbe3ee;border-radius:14px;padding:14px;background:#fbfcfe;cursor:pointer;transition:.15s;}
+.fcOptCard:hover{border-color:var(--blue);}
+.fcOptCard.selected{border-color:var(--blue);background:var(--blue-soft);}
+.fcOptLabel{font-weight:700;font-size:14px;margin-bottom:8px;color:var(--line);display:flex;align-items:center;gap:8px;}
+.fcOptLabel .optLetter{width:24px;height:24px;font-size:12px;}
+
+/* ============ PART 2 — CLICK-TO-PLACE (โครงผังงานตายตัว) ============ */
+.p2Toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 16px;}
+.paletteShape{
+  cursor:pointer;padding:10px 16px;font-size:13px;font-weight:700;border-radius:8px;
+  box-shadow:0 3px 8px rgba(0,0,0,.1);user-select:none;border:3px solid transparent;transition:.15s;
+}
+.paletteShape.pTerminal{background:var(--green-soft);border-color:var(--green);border-radius:999px;}
+.paletteShape.pProcess{background:var(--blue-soft);border-color:var(--blue);}
+.paletteShape.pIO{background:var(--amber-soft);border-color:var(--amber);clip-path:polygon(10% 0,100% 0,90% 100%,0 100%);}
+.paletteShape.pDecision{background:var(--red-soft);border-color:var(--red);}
+.paletteShape.active{outline:3px solid var(--line);outline-offset:2px;transform:scale(1.08);box-shadow:0 6px 16px rgba(0,0,0,.25);}
+.textTray{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 16px;}
+.textChip{
+  background:var(--purple-soft);border:2px solid #a893e0;color:#4a3585;padding:7px 14px;border-radius:999px;
+  font-size:13px;cursor:pointer;user-select:none;transition:.15s;
+}
+.textChip.active{outline:3px solid var(--purple);outline-offset:2px;transform:scale(1.06);background:#ddd2f5;}
+.textChip.used{opacity:.4;text-decoration:line-through;cursor:not-allowed;}
+.p2Hint{font-size:13.5px;color:var(--ink-soft);background:var(--blue-soft);border-radius:12px;padding:12px 16px;margin-bottom:12px;line-height:1.7;}
+.pickHint{font-size:13.5px;font-weight:700;color:var(--blue);background:#fff;border:2px dashed var(--blue);
+  border-radius:10px;padding:8px 14px;margin-bottom:12px;display:none;}
+.pickHint.show{display:block;}
+
+#p2Diagram{background:#fbfcfe;border:2px dashed #b7c1d1;border-radius:16px;padding:26px 16px;overflow-x:auto;}
+.slotBox{
+  position:relative;min-width:170px;max-width:240px;min-height:52px;padding:10px 16px;text-align:center;
+  font-size:13.5px;font-weight:600;color:var(--line);line-height:1.4;cursor:pointer;transition:.15s;
+  display:flex;align-items:center;justify-content:center;
+}
+.slotBox.empty{border:3px dashed #b7c1d1;border-radius:12px;background:#eef2f7;color:#94a0b5;}
+.slotBox.empty:hover{border-color:var(--blue);background:var(--blue-soft);color:var(--blue);}
+.slotBox.terminal{background:var(--green-soft);border:2px solid var(--green);border-radius:999px;box-shadow:0 3px 8px rgba(0,0,0,.08);}
+.slotBox.process{background:var(--blue-soft);border:2px solid var(--blue);border-radius:6px;box-shadow:0 3px 8px rgba(0,0,0,.08);}
+.slotBox.io{background:var(--amber-soft);border:2px solid var(--amber);clip-path:polygon(8% 0,100% 0,92% 100%,0 100%);padding:10px 26px;box-shadow:0 3px 8px rgba(0,0,0,.08);}
+.slotBox.decision{background:var(--red-soft);border:2px solid var(--red);border-radius:6px;min-height:70px;box-shadow:0 3px 8px rgba(0,0,0,.08);}
+.slotBox .slotClear{position:absolute;top:-9px;right:-9px;width:20px;height:20px;border-radius:50%;background:var(--red);color:#fff;
+  border:none;font-size:12px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:3;}
+.slotChain{display:flex;flex-direction:column;align-items:center;}
+.slotArrow{width:3px;height:26px;background:var(--line);position:relative;}
+.slotArrow::after{content:'';position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);
+  border-left:6px solid transparent;border-right:6px solid transparent;border-top:9px solid var(--line);}
+.slotBranchRow{display:flex;gap:34px;justify-content:center;}
+.slotBranchCol{display:flex;flex-direction:column;align-items:center;}
+.slotBranchLabel{font-weight:700;font-size:13px;padding:2px 12px;border-radius:999px;margin-bottom:6px;}
+.slotBranchLabel.yes{background:var(--green-soft);color:#1c6b47;}
+.slotBranchLabel.no{background:var(--red-soft);color:#a12f3f;}
+.slotMergeBar{height:3px;background:var(--line);margin-top:4px;width:65%;}
+.loopBackNote{
+  margin-top:8px;font-size:12.5px;font-weight:700;color:var(--purple);background:var(--purple-soft);
+  border:2px dashed #a893e0;border-radius:10px;padding:6px 12px;text-align:center;max-width:220px;line-height:1.5;
+}
+
+.p2Actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;}
+.p2Btn{padding:9px 18px;border-radius:10px;border:2px solid #cdd6e3;background:#fff;font-size:13.5px;font-weight:600;color:var(--line);}
+.p2Btn.danger{border-color:var(--red);color:var(--red);}
+#p2Reflect{width:100%;min-height:70px;border-radius:12px;border:2px solid #d6dee9;padding:12px 14px;font-size:14.5px;resize:vertical;margin-top:14px;}
+
+/* ============ SUBMIT ============ */
+#submitBar{
+  position:sticky;bottom:0;background:var(--paper);border-top:2px solid #dbe3ee;padding:14px 22px;
+  display:flex;justify-content:space-between;align-items:center;box-shadow:0 -8px 20px rgba(0,0,0,.06);
+  border-radius:18px 18px 0 0;margin-top:20px;flex-wrap:wrap;gap:10px;
+}
+#submitStatus{font-size:13.5px;color:var(--ink-soft);}
+#submitBtn{padding:14px 34px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--green),#1c6b47);
+  color:#fff;font-weight:700;font-size:16px;box-shadow:0 8px 18px rgba(46,158,111,.35);}
+#submitBtn:hover{transform:translateY(-2px);}
+
+/* ============ MODAL ============ */
+.modalOverlay{position:fixed;inset:0;background:rgba(20,26,40,.55);display:flex;align-items:center;justify-content:center;z-index:200;padding:20px;}
+.modalBox{background:#fff;border-radius:18px;padding:26px 26px;max-width:440px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.3);}
+.modalBox h3{font-size:18px;color:var(--line);margin-bottom:10px;}
+.modalBox p{font-size:14.5px;color:var(--ink-soft);line-height:1.7;margin-bottom:14px;}
+.modalBox ul{margin:0 0 14px;padding-left:20px;font-size:14px;color:var(--red);line-height:1.8;}
+.modalBox .modalBtns{display:flex;gap:10px;justify-content:flex-end;}
+.modalBox button{padding:10px 20px;border-radius:10px;border:none;font-weight:700;font-size:14px;}
+.btnGhost{background:#eef2f7;color:var(--line);}
+.btnPrimary{background:var(--blue);color:#fff;}
+
+/* ============ RESULT SCREEN ============ */
+#resultScreen{max-width:760px;margin:40px auto;padding:0 16px;}
+.resultCard{background:var(--paper);border-radius:22px;box-shadow:var(--shadow);padding:34px 30px;text-align:center;}
+.resultCard .bigScore{font-size:52px;font-weight:800;color:var(--blue);margin:14px 0 4px;}
+.resultCard .scoreLabel{color:var(--ink-soft);font-size:15px;}
+.keyGate{margin-top:24px;background:var(--amber-soft);border-radius:14px;padding:20px;text-align:left;}
+.keyGate input{width:160px;padding:10px 14px;border-radius:10px;border:2px solid #d6dee9;font-size:16px;text-align:center;letter-spacing:4px;}
+#answerKeyList{text-align:left;margin-top:20px;}
+.keyRow{padding:12px 16px;border-radius:12px;background:#f7f9fc;margin-bottom:8px;font-size:14px;line-height:1.7;}
+.keyRow b{color:var(--green);}
+.keyRow .wrongTag{color:var(--red);font-weight:700;}
+/* ============ MOBILE RESPONSIVE ============ */
+@media (max-width: 600px){
+  #examScreen, #coverScreen, #resultScreen{padding-left:10px;padding-right:10px;}
+  .qCard{padding:16px 14px;}
+  .coverCard{padding:24px 18px;}
+  .formGrid{grid-template-columns:1fr;}
+  .qScenario,.qPseudo,.fcWrap,.fcOptGrid,.optList{margin-left:0;}
+  .qHead{flex-wrap:wrap;}
+
+  /* ผังงานแยกสาขา (ตอนที่ 1 และตอนที่ 2) เรียงแนวตั้งแทนแนวนอน กันล้นจอมือถือ */
+  .fcBranchRow, .slotBranchRow{flex-direction:column;align-items:center;gap:14px;}
+  .fcMergeBar, .slotMergeBar{width:3px !important;height:20px;margin:0 auto;}
+  .fcShape, .slotBox{min-width:150px;max-width:88vw;font-size:13px;padding:9px 12px;}
+  .fcOptCard{padding:10px;}
+  .fcOptGrid{grid-template-columns:1fr;}
+
+  .p2Toolbar, .textTray{gap:6px;}
+  .paletteShape, .textChip{font-size:12px;padding:8px 10px;}
+  #p2Diagram, #p2DiagramB{padding:18px 10px;}
+  .loopBackNote{max-width:88vw;font-size:11.5px;}
+
+  #topbar{padding:8px 10px;}
+  #timerBox{font-size:15px;padding:5px 12px;}
+  .resultCard .bigScore{font-size:38px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= TOP BAR ================= -->
+<div id="topbar" class="hidden">
+  <div class="title">📝 ข้อสอบกลางภาค ว22104 วิทยาการคำนวณ 2</div>
+  <div id="progressWrap"><div id="progressBar"></div></div>
+  <div id="timerBox">⏱ <span id="timerText">50:00</span></div>
+</div>
+
+<!-- ================= COVER SCREEN ================= -->
+<div id="coverScreen">
+  <div class="coverCard">
+    <h1>ข้อสอบกลางภาค ว22104 วิทยาการคำนวณ 2</h1>
+    <div class="sub">หน่วยการเรียนรู้ที่ 1 แก้ปัญหาด้วยแนวคิดเชิงคำนวณ · ชั้นมัธยมศึกษาปีที่ 2</div>
+
+    <div class="formRow">
+      <div class="formGrid">
+        <div>
+          <label>ชื่อ</label>
+          <input type="text" id="stuFirst" placeholder="กรอกชื่อ">
+        </div>
+        <div>
+          <label>นามสกุล</label>
+          <input type="text" id="stuLast" placeholder="กรอกนามสกุล">
+        </div>
+      </div>
+    </div>
+    <div class="formRow">
+      <div class="formGrid">
+        <div>
+          <label>ชั้น / ห้อง</label>
+          <input type="text" id="stuClass" placeholder="เช่น ม.2/1">
+        </div>
+        <div>
+          <label>เลขที่</label>
+          <input type="text" id="stuNo" placeholder="เลขที่">
+        </div>
+      </div>
+    </div>
+
+    <div class="infoBox">
+      <b>คำชี้แจง</b><br>
+      ข้อสอบมี 2 ตอน คือ ตอนที่ 1 ปรนัย 30 ข้อ ข้อละ 1 คะแนน และตอนที่ 2 อัตนัยวาดผังงาน 2 ข้อ รวม 15 คะแนน<br>
+      เวลาในการทำข้อสอบ <b>50 นาที</b> เมื่อหมดเวลาระบบจะส่งคำตอบให้อัตโนมัติ<br>
+      ลำดับข้อและลำดับตัวเลือกของนักเรียนแต่ละคนจะไม่เหมือนกัน<br>
+      เมื่อทำครบทุกข้อแล้วจึงจะสามารถกดส่งข้อสอบได้
+    </div>
+
+    <button id="startBtn" disabled>กรอกชื่อ-นามสกุลให้ครบก่อนเริ่มทำข้อสอบ</button>
+  </div>
+</div>
+
+<!-- ================= EXAM SCREEN ================= -->
+<div id="examScreen" class="hidden">
+
+  <div class="partHeader">
+    <h2>ตอนที่ 1 · ปรนัย 4 ตัวเลือก 30 ข้อ ข้อละ 1 คะแนน</h2>
+    <p>เลือกคำตอบที่ถูกต้องที่สุดเพียงข้อเดียว</p>
+  </div>
+  <div id="part1Container"></div>
+
+  <div class="partHeader">
+    <h2>ตอนที่ 2 · อัตนัยวาดผังงาน 2 ข้อ รวม 15 คะแนน</h2>
+    <p>แตะเลือกสัญลักษณ์และข้อความมาวางในผังงานที่กำหนดให้ครบทุกช่อง</p>
+  </div>
+  <div class="qCard">
+    <div class="qText"><b>ข้อ 1 · 10 คะแนน</b></div>
+    <div class="qText" style="margin-top:6px;">
+      <b>สถานการณ์ — ระบบเช็คอินก่อนขึ้นรถบัสทัศนศึกษา</b><br><br>
+      ก่อนขึ้นรถบัสไปทัศนศึกษา ครูจะตรวจสอบว่าชื่อของนักเรียนอยู่ในใบอนุญาตจากผู้ปกครองหรือไม่ ถ้ามีชื่อ นักเรียนขึ้นรถบัสได้ทันที
+      แต่ถ้าไม่มีชื่อ นักเรียนต้องแจ้งครูแล้วรอผู้ปกครองติดต่อกลับก่อน
+    </div>
+
+    <div class="p2Hint">
+      <b>วิธีทำ</b> 1 แตะเลือกสัญลักษณ์จากกล่องเครื่องมือด้านล่าง แล้วแตะช่องว่างในผังงานที่ต้องการวาง &nbsp;·&nbsp;
+      2 แตะเลือกข้อความจากคลังคำ แล้วแตะสัญลักษณ์ที่วางไว้เพื่อใส่ป้ายกำกับ &nbsp;·&nbsp;
+      เส้นทางและลูกศรทั้งหมดถูกวาดไว้ให้แล้ว ไม่ต้องลากเส้นเอง กดปุ่ม × มุมขวาบนของสัญลักษณ์เพื่อล้างช่องนั้นทิ้ง
+    </div>
+    <div class="pickHint" id="pickHint"></div>
+
+    <div class="p2Toolbar" id="paletteBar">
+      <div class="paletteShape pTerminal" data-shape="terminal">⬭ เริ่มต้น/สิ้นสุด</div>
+      <div class="paletteShape pProcess" data-shape="process">▭ ประมวลผล</div>
+      <div class="paletteShape pIO" data-shape="io">▱ รับ/แสดงผล</div>
+      <div class="paletteShape pDecision" data-shape="decision">◇ ตัดสินใจ</div>
+    </div>
+
+    <div class="textTray" id="textTray">
+      <div class="textChip" data-text="เริ่มต้น">เริ่มต้น</div>
+      <div class="textChip" data-text="ตรวจสอบรายชื่อในใบอนุญาต">ตรวจสอบรายชื่อในใบอนุญาต</div>
+      <div class="textChip" data-text="มีชื่อในใบอนุญาตหรือไม่ ?">มีชื่อในใบอนุญาตหรือไม่ ?</div>
+      <div class="textChip" data-text="ขึ้นรถบัสได้ทันที">ขึ้นรถบัสได้ทันที</div>
+      <div class="textChip" data-text="แจ้งครูแล้วรอผู้ปกครองติดต่อกลับ">แจ้งครูแล้วรอผู้ปกครองติดต่อกลับ</div>
+      <div class="textChip" data-text="สิ้นสุด">สิ้นสุด</div>
+    </div>
+
+    <div id="p2Diagram"></div>
+
+    <div class="p2Actions">
+      <button class="p2Btn danger" id="p2ResetBtn">🔄 ล้างผังงานทั้งหมด</button>
+      <span style="font-size:13px;color:var(--ink-soft);align-self:center;">เติมครบแล้ว: <b id="slotDoneCount">0</b> / 6 ช่อง</span>
+    </div>
+
+    <textarea id="p2Reflect" placeholder="อธิบายสั้นๆ เพิ่มเติม ถ้าต้องการ (ไม่บังคับ)"></textarea>
+  </div>
+
+  <div class="qCard">
+    <div class="qText"><b>ข้อ 2 · 5 คะแนน</b></div>
+    <div class="qText" style="margin-top:6px;">
+      <b>สถานการณ์ — นับถอยหลังปล่อยจรวดจำลอง</b><br><br>
+      เขียนผังงานสำหรับนับถอยหลังปล่อยจรวด โดยเริ่มนับจาก 10 แล้วลดค่าลงทีละ 1 จนกว่าจะถึง 1
+      พิมพ์ค่าออกมาทุกครั้งที่นับ แล้วจึงปล่อยจรวด
+    </div>
+
+    <div class="p2Hint">
+      <b>วิธีทำ</b> แตะเลือกสัญลักษณ์หรือข้อความจากด้านล่าง แล้วแตะช่องว่างในผังงานที่ต้องการวาง &nbsp;·&nbsp;
+      สังเกตว่าเส้นทาง "จริง" จะวนกลับไปตรวจสอบเงื่อนไขใหม่เรื่อยๆ จนกว่าเงื่อนไขจะเป็นเท็จ
+    </div>
+
+    <div class="p2Toolbar" id="paletteBarB">
+      <div class="paletteShape pTerminal" data-shape="terminal">⬭ เริ่มต้น/สิ้นสุด</div>
+      <div class="paletteShape pProcess" data-shape="process">▭ ประมวลผล</div>
+      <div class="paletteShape pIO" data-shape="io">▱ รับ/แสดงผล</div>
+      <div class="paletteShape pDecision" data-shape="decision">◇ ตัดสินใจ</div>
+    </div>
+
+    <div class="textTray" id="textTrayB">
+      <div class="textChip" data-text="เริ่มต้น">เริ่มต้น</div>
+      <div class="textChip" data-text="กำหนด count = 10">กำหนด count = 10</div>
+      <div class="textChip" data-text="count ≥ 1 ?">count ≥ 1 ?</div>
+      <div class="textChip" data-text="พิมพ์ค่า count แล้ว ลด count ลง 1">พิมพ์ค่า count แล้ว ลด count ลง 1</div>
+      <div class="textChip" data-text="สิ้นสุด (ปล่อยจรวด)">สิ้นสุด (ปล่อยจรวด)</div>
+    </div>
+
+    <div id="p2DiagramB"></div>
+
+    <div class="p2Actions">
+      <button class="p2Btn danger" id="p2ResetBtnB">🔄 ล้างผังงานทั้งหมด</button>
+      <span style="font-size:13px;color:var(--ink-soft);align-self:center;">เติมครบแล้ว: <b id="slotDoneCountB">0</b> / 5 ช่อง</span>
+    </div>
+  </div>
+
+  <div id="submitBar">
+    <div id="submitStatus">ตอบแล้ว 0 / 30 ข้อ</div>
+    <button id="submitBtn">📤 ส่งข้อสอบ</button>
+  </div>
+</div>
+
+<!-- ================= RESULT SCREEN ================= -->
+<div id="resultScreen" class="hidden">
+  <div class="resultCard">
+    <h1>✅ ส่งข้อสอบเรียบร้อยแล้ว</h1>
+    <div style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-top:10px;">
+      <div>
+        <div class="scoreLabel">ตอนที่ 1 · ปรนัย 30 ข้อ</div>
+        <div class="bigScore"><span id="scoreVal">0</span> / 30</div>
+      </div>
+      <div>
+        <div class="scoreLabel">ตอนที่ 2 ข้อ 1 · รถบัส</div>
+        <div class="bigScore"><span id="scoreVal2">0</span> / 10</div>
+      </div>
+      <div>
+        <div class="scoreLabel">ตอนที่ 2 ข้อ 2 · จรวด</div>
+        <div class="bigScore"><span id="scoreVal2B">0</span> / 5</div>
+      </div>
+      <div>
+        <div class="scoreLabel">คะแนนรวม</div>
+        <div class="bigScore" style="color:var(--green);"><span id="scoreValTotal">0</span> / 45</div>
+      </div>
+    </div>
+    <div class="scoreLabel" id="stuNameDisplay" style="margin-top:10px;"></div>
+
+    <div class="keyGate" id="keyGate">
+      <b>ดูเฉลยและคำอธิบาย</b>
+      <p>กรอกรหัสผ่านที่ครูกำหนดเพื่อดูเฉลยละเอียดทุกข้อ</p>
+      <input type="password" id="keyPassInput" placeholder="รหัสผ่าน">
+      <button class="p2Btn" id="keyPassBtn" style="margin-left:8px;background:var(--blue);color:#fff;border:none;">ปลดล็อกเฉลย</button>
+      <div id="keyPassError" style="color:var(--red);font-size:13px;margin-top:8px;"></div>
+    </div>
+
+    <div id="answerKeyList" class="hidden"></div>
+  </div>
+</div>
+
+<!-- ================= MODAL (validation) ================= -->
+<div class="modalOverlay hidden" id="modalOverlay">
+  <div class="modalBox">
+    <h3 id="modalTitle">ทำข้อสอบยังไม่ครบ</h3>
+    <p id="modalDesc">กรุณาตรวจสอบรายการต่อไปนี้ก่อนส่งข้อสอบ</p>
+    <ul id="modalList"></ul>
+    <div class="modalBtns">
+      <button class="btnPrimary" id="modalOkBtn">กลับไปทำต่อ</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   1) QUESTION DATA — 30 ข้อ ตอนที่ 1
+   correctIndex อ้างอิงตำแหน่งเดิมใน options ก่อนสับเปลี่ยน (0=ก,1=ข,2=ค,3=ง)
+===================================================================== */
+const RAW_QUESTIONS = [
+{id:1,text:"แนวคิดเชิงคำนวณหมายถึงข้อใด",options:["คิดเหมือนคอมพิวเตอร์ทุกขั้นตอน","คิดแก้ปัญหาอย่างเป็นขั้นตอน เป็นระบบ","ท่องจำสูตรคำนวณให้ได้มากที่สุด","เขียนโปรแกรมให้เร็วที่สุด"],correctIndex:1},
+{id:2,text:"แนวคิดเชิงคำนวณมีองค์ประกอบหลักทั้งหมดกี่อย่าง",options:["2","3","4","5"],correctIndex:2},
+{id:3,text:"ข้อใดไม่ใช่องค์ประกอบของแนวคิดเชิงคำนวณ",options:["การแบ่งปัญหาย่อย","การหารูปแบบ","การแยกแยะรายละเอียดภาษาโปรแกรม","การออกแบบขั้นตอนแก้ปัญหา"],correctIndex:2},
+{id:4,scenario:"ทีมงานร้านกาแฟแห่งหนึ่งพบว่าลูกค้าต่อคิวนานขึ้นทุกวันศุกร์ ผู้จัดการจึงเก็บข้อมูลจำนวนลูกค้าทุกชั่วโมงเป็นเวลา 4 สัปดาห์ แยกเป็นปัญหาย่อย คือ ความเร็วการชงกาแฟ จำนวนพนักงาน และช่วงเวลาที่ลูกค้าหนาแน่น แล้วจึงเปรียบเทียบแต่ละสัปดาห์เพื่อหาความเชื่อมโยง",text:"ขั้นตอนทั้งหมดนี้ตรงกับแนวคิดเชิงคำนวณกี่องค์ประกอบ และมีองค์ประกอบใดบ้าง",options:["1 องค์ประกอบ คือ การหารูปแบบ เท่านั้น","2 องค์ประกอบ คือ การแบ่งปัญหาย่อย และการหารูปแบบ","3 องค์ประกอบ คือ การแบ่งปัญหาย่อย การหารูปแบบ และการออกแบบขั้นตอนแก้ปัญหา","ไม่เกี่ยวข้องกับแนวคิดเชิงคำนวณ เพราะเป็นเรื่องธุรกิจ"],correctIndex:1},
+{id:5,text:"เรียงลำดับการใช้แนวคิดเชิงคำนวณที่เหมาะสมที่สุดเมื่อเจอปัญหาใหญ่",options:["ออกแบบขั้นตอนก่อน แล้วค่อยดูว่าปัญหาคืออะไร","แบ่งปัญหาย่อย หารูปแบบและตัดสิ่งไม่จำเป็น แล้วจึงออกแบบขั้นตอนแก้ปัญหา","ทำทุกอย่างพร้อมกันโดยไม่วางแผน","ข้ามการวิเคราะห์ปัญหาไปเขียนโปรแกรมเลย"],correctIndex:1},
+{id:6,scenario:"หุ่นยนต์ดูดฝุ่นอัตโนมัติที่บ้านตั้งเวลาให้เริ่มทำความสะอาดทุกวันเวลาเดิม โดยทำตามขั้นตอนเดิมซ้ำทุกครั้ง คือ เริ่มทำงาน วนดูดฝุ่นรอบห้อง ตรวจแบตเตอรี่ แล้วกลับเข้าที่ชาร์จ",text:"การทำงานของหุ่นยนต์นี้แสดงให้เห็นองค์ประกอบใดของแนวคิดเชิงคำนวณชัดเจนที่สุด",options:["การหารูปแบบ เพราะทำเวลาเดิมทุกวัน","การออกแบบขั้นตอนแก้ปัญหา เพราะมีลำดับการทำงานที่ชัดเจนและทำซ้ำได้ทุกครั้ง","การแปลภาษาโปรแกรม","การตรวจแก้ข้อผิดพลาด"],correctIndex:1},
+{id:7,text:"แนวคิดเชิงคำนวณสามารถนำไปใช้ได้กับเรื่องใด",options:["การแก้ปัญหาที่ยังไม่ได้รับการแก้ไข","การเขียนโปรแกรมเท่านั้น","การแก้ปัญหาในชีวิตประจำวัน","การใช้โทรศัพท์มือถือเท่านั้น"],correctIndex:2},
+{id:8,scenario:'"จัดงานวันเกิด" แบ่งเป็น จองสถานที่ สั่งเค้ก ทำการ์ดเชิญ จัดตกแต่ง',text:"นี่คือการใช้แนวคิดใด",options:["การหารูปแบบ","การแบ่งปัญหาใหญ่เป็นปัญหาย่อย","แนวคิดเชิงนามธรรม","การออกแบบขั้นตอนแก้ปัญหา"],correctIndex:1},
+{id:9,scenario:"ทีมฟุตบอลโรงเรียนแพ้ติดต่อกัน 3 นัด โค้ชต้องการหาสาเหตุ จึงแยกวิเคราะห์เป็นส่วนต่างๆ คือ การป้องกัน การรุก ความฟิตของผู้เล่น และจิตใจของทีม แทนที่จะดูภาพรวมทั้งเกม",text:"เพราะเหตุใดวิธีนี้จึงช่วยโค้ชแก้ปัญหาได้แม่นยำกว่า",options:["เพราะทำให้เกมสนุกขึ้น","เพราะเมื่อแยกเป็นส่วนย่อย จะระบุจุดที่มีปัญหาจริงและแก้ตรงจุดได้ แทนที่จะแก้ทั้งทีมโดยไม่รู้สาเหตุ","เพราะโค้ชไม่ต้องคุยกับผู้เล่น","เพราะการดูภาพรวมทั้งเกมโดยไม่แยกส่วนย่อย ก็สามารถระบุสาเหตุที่แท้จริงได้รวดเร็วกว่าเช่นกัน"],correctIndex:1},
+{id:10,text:"เพราะเหตุใดปัญหาใหญ่ที่ไม่ถูกแบ่งย่อยจึงมักแก้ยากกว่า",options:["เพราะมีรายละเอียดเยอะเกินกว่าจะมองเห็นจุดผิดพลาดได้ในคราวเดียว","เพราะปัญหาใหญ่ไม่มีทางแก้ได้","เพราะเสียเวลามากกว่าเสมอ","เพราะไม่เกี่ยวข้องกับปัญหาย่อย"],correctIndex:0},
+{id:11,text:"ข้อใดคือลักษณะที่ดีของการแบ่งปัญหาย่อย",options:["แต่ละปัญหาย่อยมีขอบเขตชัดเจนและแก้ไข ตรวจสอบแยกกันได้","แบ่งปัญหาย่อยให้มากที่สุดเท่าที่จะทำได้เสมอ","ไม่ต้องรวมปัญหาย่อยกลับเป็นปัญหาใหญ่อีก","แบ่งโดยไม่ต้องดูว่าเกี่ยวข้องกับปัญหาเดิมหรือไม่"],correctIndex:0},
+{id:12,text:"การหารูปแบบ คือการมองหาสิ่งใด",options:["รูปแบบหรือความเหมือนที่ปรากฏซ้ำๆ ในข้อมูล","รายละเอียดที่ไม่จำเป็น","ข้อผิดพลาดของโปรแกรม","ขั้นตอนสุดท้ายของการแก้ปัญหา"],correctIndex:0},
+{id:13,text:"แนวคิดเชิงนามธรรม คือการทำสิ่งใด",options:["เพิ่มรายละเอียดให้มากที่สุด","คัดเฉพาะข้อมูลที่จำเป็น ตัดส่วนที่ไม่เกี่ยวข้องออก","หาความเหมือนของปัญหาหลายๆ ข้อ","การแก้ปัญหาอย่างเป็นขั้นตอน"],correctIndex:1},
+{id:14,text:"หากฝนตกทุกครั้งต้องกางร่ม แสดงว่าผู้เรียนใช้ทักษะใดตามแนวคิดเชิงคำนวณ",options:["แนวคิดเชิงนามธรรม","การพิจารณารูปแบบ","การแบ่งปัญหาใหญ่เป็นปัญหาย่อย","การสังเกตความสัมพันธ์"],correctIndex:1},
+{id:15,scenario:"แผนที่รถไฟฟ้าที่แจกให้ผู้โดยสารแสดงเฉพาะชื่อสถานีและเส้นทาง โดยไม่มีระยะทางจริง ถนนโดยรอบ หรืออาคารต่างๆ",text:"เพราะเหตุใดแผนที่แบบนี้จึงยังใช้งานได้ดี ทั้งที่ข้อมูลไม่ครบถ้วนเหมือนแผนที่จริง",options:["เพราะผู้ออกแบบขี้เกียจใส่รายละเอียด","เพราะใช้แนวคิดเชิงนามธรรม ตัดรายละเอียดที่ไม่จำเป็นต่อการหาเส้นทางออก เหลือแค่สิ่งที่ผู้โดยสารต้องใช้จริง","เพราะแผนที่จริงมีราคาแพงเกินไป","เพราะรถไฟฟ้ามีสถานีน้อย"],correctIndex:1},
+{id:16,scenario:"ตารางเวลารถเมล์สายหนึ่งมารอบละ 15 นาทีเสมอ",text:"หากต้องอธิบายให้เพื่อนเข้าใจโดยไม่ต้องบอกเวลาทุกเที่ยว ต้องใช้แนวคิดใดร่วมกัน",options:["การหารูปแบบ และแนวคิดเชิงนามธรรม","การแบ่งปัญหาย่อย และการออกแบบขั้นตอนแก้ปัญหา","แนวคิดเชิงนามธรรม และการแบ่งปัญหาย่อย","การแบ่งปัญหาย่อย และการพิจารณารูปแบบ"],correctIndex:0},
+{id:17,text:"โจทย์ชุดตัวเลข พิจารณาลำดับต่อไปนี้ 3, 6, 12, 24, ❓ ตัวเลขถัดไปคือข้อใด",options:["36","42","48","54"],correctIndex:2},
+{id:18,text:"โจทย์ชุดตัวเลข ต้องวิเคราะห์หลายชั้นก่อนตอบ พิจารณาลำดับต่อไปนี้ 3, 10, 6, 12, 9, 14, 12, ❓ ตัวเลขถัดไปคือข้อใด",options:["15","16","18","20"],correctIndex:1},
+{id:19,text:"สัญลักษณ์รูปวงรีในผังงานหมายถึงข้อใด",options:["การประมวลผล","จุดเริ่มต้น สิ้นสุด","การตัดสินใจ","การรับ แสดงผลข้อมูล"],correctIndex:1},
+{id:20,text:"สัญลักษณ์รูปข้าวหลามตัด หรือสัญลักษณ์การตัดสินใจ ต้องมีข้อความประเภทใดอยู่ภายใน",options:["ประโยคบอกเล่าทั่วไป",'ประโยคคำถามที่ตอบได้แค่ "ใช่" หรือ "ไม่ใช่"',"ตัวเลขเพียงอย่างเดียว","ชื่อตัวแปรเท่านั้น"],correctIndex:1},
+{id:21,text:"เส้นลูกศรที่เชื่อมระหว่างสัญลักษณ์ต่างๆ ในผังงาน เรียกว่าอะไร และทำหน้าที่ใด",options:["เส้นทางการไหล ทำหน้าที่แสดงทิศทางการทำงานของขั้นตอน","จุดเชื่อมต่อ ทำหน้าที่เก็บข้อมูล","สัญลักษณ์ตัดสินใจ ทำหน้าที่แยกเส้นทาง","สัญลักษณ์ประมวลผล ทำหน้าที่คำนวณ"],correctIndex:0},
+{id:22,pseudo:'เริ่ม\nรับคะแนน\nถ้าคะแนน ≥ 50\n    แสดง "ผ่าน"\nมิฉะนั้น\n    แสดง "ไม่ผ่าน"\nจบ',text:"รหัสจำลองนี้ต้องใช้สัญลักษณ์ใดเพิ่มจากการรับข้อมูลและแสดงผล",options:["การตัดสินใจ","การเชื่อมต่อ","วนซ้ำ","ไม่มี"],correctIndex:0},
+{id:23,diagram:{type:"seq"},text:"จากผังงานข้างต้น ขั้นตอนใดควรทำก่อนขั้นตอน \"บ้วนปากด้วยน้ำสะอาด\"",options:["หยิบแปรงสีฟันและยาสีฟัน","บีบยาสีฟันใส่แปรง","แปรงฟันให้ทั่วปาก","เก็บแปรงสีฟันเข้าที่"],correctIndex:2},
+{id:24,scenario:"ก่อนขึ้นรถบัสทัศนศึกษา ครูตรวจว่าชื่อนักเรียนอยู่ในใบอนุญาตหรือไม่ ถ้ามีชื่อ ขึ้นรถได้ทันที ถ้าไม่มี ต้องรอผู้ปกครองติดต่อกลับ",text:"เส้นทาง \"ใช่\" และ \"ไม่ใช่\" จากจุดตัดสินใจนี้ ก่อนถึงจุดสิ้นสุดต้องทำอย่างไร",options:["แยกไปยังจุดสิ้นสุดคนละจุดกันได้เลย","วนกลับมารวมกันก่อน แล้วจึงไปยังจุดสิ้นสุดเพียงจุดเดียว","ไม่จำเป็นต้องมีจุดสิ้นสุด","ต้องข้ามจุดตัดสินใจไปเลย"],correctIndex:1},
+{id:25,diagram:{type:"pseudoToFlowchart"},pseudo:'รับค่าอายุ\nถ้าอายุตั้งแต่ 18 ปีขึ้นไป ให้แสดงข้อความ "มีสิทธิ์เลือกตั้ง"\nถ้าไม่ถึง ให้แสดงข้อความ "ยังไม่มีสิทธิ์เลือกตั้ง"',text:"อ่านรหัสจำลองข้างต้น แล้วเลือกผังงานที่ตรงกับรหัสจำลองนี้มากที่สุด",correctIndex:0},
+{id:26,text:"ข้อใดอธิบายความแตกต่างระหว่างผังงานแบบลำดับ กับผังงานแบบทำซ้ำได้ถูกต้อง",options:["ผังงานแบบทำซ้ำมีจุดตัดสินใจที่ควบคุมให้บางขั้นตอนถูกทำวนซ้ำ ส่วนแบบลำดับทำทีละขั้นตรงไปโดยไม่ย้อนกลับ","ผังงานแบบทำซ้ำไม่มีจุดเริ่มต้น สิ้นสุด","ผังงานแบบลำดับใช้สัญลักษณ์มากกว่าเสมอ","ทั้งสองแบบเหมือนกันทุกประการ"],correctIndex:0},
+{id:27,scenario:"ขับรถออกจากบ้าน เมื่อถึงสี่แยก จะตรวจสัญญาณไฟก่อนทุกครั้งว่าเป็นไฟเขียวหรือไม่ ถ้าเป็นไฟเขียวจึงขับรถผ่าน ถ้าเป็นไฟแดงจะไม่ขับผ่านและรอ",text:"การทำงานลักษณะนี้ตรงกับการทำซ้ำแบบใด",options:["แบบทำซ้ำก่อน เพราะตรวจสอบเงื่อนไขก่อนทำงานทุกครั้ง อาจไม่ได้ขับผ่านเลยถ้าไฟแดงตลอด","แบบทำซ้ำหลัง เพราะขับผ่านไปก่อนแล้วค่อยตรวจไฟ","ไม่ใช่การทำซ้ำ เพราะทำแค่ครั้งเดียว","เป็นแบบลำดับ เพราะไม่มีการตัดสินใจ"],correctIndex:0},
+{id:28,scenario:'ก่อนออกกำลังกาย ให้วอร์มอัพอย่างน้อย 1 รอบก่อนเสมอ จากนั้นจึงถามตัวเองว่า "ยังเหนื่อยอยู่ไหม" ถ้ายังเหนื่อยอยู่ ให้วอร์มอัพต่อ ถ้าไม่เหนื่อยแล้วให้หยุดพัก',text:"การทำงานลักษณะนี้ตรงกับการทำซ้ำแบบใด",options:["แบบทำซ้ำก่อน เพราะตรวจเงื่อนไขก่อนทำงานเสมอ","แบบทำซ้ำหลัง เพราะทำงานอย่างน้อย 1 ครั้งก่อน แล้วจึงตรวจสอบเงื่อนไขทีหลัง","ไม่ใช่การทำซ้ำ เพราะทำแค่ครั้งเดียว","เป็นแบบลำดับ เพราะไม่มีการวนกลับ"],correctIndex:1},
+{id:29,diagram:{type:"branch"},text:"พิจารณาผังงานข้างต้น ถ้าวันนี้ฝนไม่ตก ผลลัพธ์ที่ผังงานนี้แสดงออกมาคือข้อใด",options:["กางร่ม","เดินไปโรงเรียนตามปกติ","แสดงทั้งสองข้อความพร้อมกัน","ไม่แสดงข้อความใดเลย"],correctIndex:1},
+{id:30,scenario:'โรงเรียนแห่งหนึ่งออกแบบระบบสมัครสมาชิกชมรมออนไลน์ ให้นักเรียนกรอกอีเมล แล้วระบบตรวจสอบว่าอีเมลนี้เคยสมัครแล้วหรือไม่ ถ้าเคยสมัครแล้ว ให้แจ้งเตือนและให้กรอกอีเมลใหม่อีกครั้ง ถ้ายังไม่เคยสมัคร ให้ดำเนินการสมัครสำเร็จทันที กระบวนการนี้จะจบก็ต่อเมื่อกรอกอีเมลใหม่ที่ยังไม่เคยสมัคร หรือเมื่อสมัครสำเร็จแล้ว',text:"ผังงานของระบบนี้ควรมีโครงสร้างควบคุมแบบใดจึงจะถูกต้องตามสถานการณ์",options:["มีแค่สัญลักษณ์ตัดสินใจอย่างเดียว ไม่ต้องมีการวนกลับ","มีสัญลักษณ์ตัดสินใจที่ควบคุมให้วนกลับไปรับอีเมลใหม่ จนกว่าจะได้อีเมลที่ยังไม่เคยสมัคร","มีแต่ลำดับขั้นตอนเรียงตรงไป ไม่ต้องมีการตัดสินใจ","ไม่จำเป็นต้องมีจุดสิ้นสุดของผังงาน"],correctIndex:1},
+];
+
+/* explanation text ต่อข้อ สำหรับหน้าเฉลย */
+const EXPLAIN = {
+1:"แนวคิดเชิงคำนวณ คือกระบวนการคิดแก้ปัญหาอย่างเป็นขั้นตอนและเป็นระบบ",
+2:"มี 4 องค์ประกอบหลัก คือ การแบ่งปัญหาย่อย การหารูปแบบ แนวคิดเชิงนามธรรม และการออกแบบขั้นตอนแก้ปัญหา",
+3:"การแปลภาษาโปรแกรมเป็นขั้นตอนของการเขียนโปรแกรม ไม่ใช่องค์ประกอบของแนวคิดเชิงคำนวณ",
+4:"การแยกปัญหาเป็นส่วนย่อยคือ Decomposition และการเปรียบเทียบแต่ละสัปดาห์เพื่อหาความเชื่อมโยงคือ Pattern Recognition",
+5:"ลำดับที่ถูกต้องคือ แบ่งปัญหาย่อย หารูปแบบ ตัดสิ่งไม่จำเป็นออก แล้วจึงออกแบบขั้นตอนแก้ปัญหา",
+6:"การมีลำดับขั้นตอนที่ชัดเจนและทำซ้ำได้ทุกครั้งคือการออกแบบขั้นตอนแก้ปัญหา หรือ Algorithm Design",
+7:"แนวคิดเชิงคำนวณใช้แก้ปัญหาในชีวิตประจำวันได้หลากหลาย ไม่ได้จำกัดแค่การเขียนโปรแกรมหรือการเรียน",
+8:"การแยกงานใหญ่ออกเป็นงานย่อยที่จัดการง่ายขึ้น คือ Decomposition",
+9:"การแยกวิเคราะห์เป็นส่วนย่อยช่วยระบุสาเหตุที่แท้จริง แทนที่จะแก้ทั้งหมดโดยไม่รู้จุดบกพร่อง",
+10:"ปัญหาที่ไม่แบ่งย่อยจะมีรายละเอียดมากเกินกว่าจะมองเห็นจุดผิดพลาดได้ในคราวเดียว",
+11:"ปัญหาย่อยที่ดีต้องมีขอบเขตชัดเจนและตรวจสอบแก้ไขแยกจากกันได้",
+12:"การหารูปแบบคือการมองหาความเหมือนหรือสิ่งที่เกิดซ้ำในข้อมูล",
+13:"แนวคิดเชิงนามธรรมคือการคัดเฉพาะข้อมูลที่จำเป็น ตัดรายละเอียดที่ไม่เกี่ยวข้องออก",
+14:"การสังเกตว่า 'ฝนตกทุกครั้งต้องกางร่ม' คือการจับความสัมพันธ์ที่เกิดซ้ำ ซึ่งตรงกับการพิจารณารูปแบบ",
+15:"แผนที่รถไฟฟ้าตัดรายละเอียดที่ไม่จำเป็นออก เหลือแค่สิ่งที่ผู้โดยสารต้องใช้จริง นี่คือแนวคิดเชิงนามธรรม",
+16:"ต้องหารูปแบบก่อนว่ารถมาซ้ำทุก 15 นาที แล้วใช้แนวคิดเชิงนามธรรมสรุปให้เข้าใจง่ายโดยไม่ต้องบอกทุกเที่ยว",
+17:"3×2=6 ผิด ลองใหม่ 3,6,12,24 คือคูณด้วย 2 ทุกครั้ง ดังนั้น 24×2 = 48",
+18:"แยกตำแหน่งคี่-คู่เป็น 2 ชุด ชุด A ตำแหน่งที่ 1,3,5,7 คือ 3,6,9,12 เพิ่มทีละ 3 ชุด B ตำแหน่งที่ 2,4,6 คือ 10,12,14 เพิ่มทีละ 2 ตัวถัดไปอยู่ในชุด A คือ 12+3 = 16",
+19:"สัญลักษณ์รูปวงรีคือจุดเริ่มต้นและสิ้นสุดของผังงาน มีอย่างละ 1 จุด",
+20:"สัญลักษณ์ตัดสินใจต้องมีข้อความเป็นประโยคคำถามที่ตอบได้แค่ใช่หรือไม่ใช่เท่านั้น",
+21:"เส้นลูกศรเรียกว่าเส้นทางการไหล ใช้แสดงทิศทางการทำงานของขั้นตอนในผังงาน",
+22:"เมื่อมีการตรวจเงื่อนไข คะแนนมากกว่าหรือเท่ากับ 50 หรือไม่ ต้องใช้สัญลักษณ์การตัดสินใจเพิ่มเข้ามา",
+23:"ลำดับที่ถูกต้องคือ หยิบแปรง บีบยาสีฟัน แปรงฟันให้ทั่วปาก แล้วจึงบ้วนปาก ขั้นตอนก่อนบ้วนปากคือแปรงฟันให้ทั่วปาก",
+24:"เส้นทางใช่และไม่ใช่ต้องวนกลับมารวมกันก่อนถึงจุดสิ้นสุดเพียงจุดเดียวเสมอ",
+25:"ผังงานที่ถูกต้องต้องรับค่าอายุก่อน แล้วจึงตัดสินใจ แล้วแยกสองเส้นทางตามคำตอบ ก่อนวนกลับมารวมกันแล้วจบ",
+26:"ผังงานแบบทำซ้ำมีจุดตัดสินใจควบคุมการวนซ้ำ ส่วนแบบลำดับทำทีละขั้นตรงไปไม่ย้อนกลับ",
+27:"ตรวจไฟก่อนขับทุกครั้งคือแบบทำซ้ำก่อน ถ้าเงื่อนไขเป็นเท็จตั้งแต่แรกอาจไม่ได้ทำงานเลยสักครั้ง",
+28:"วอร์มอัพก่อนอย่างน้อย 1 ครั้งแล้วค่อยถามทีหลัง คือแบบทำซ้ำหลัง",
+29:"เมื่อฝนไม่ตก เส้นทางไม่ใช่จะนำไปสู่การแสดงข้อความเดินไปโรงเรียนตามปกติ",
+30:"ต้องมีสัญลักษณ์ตัดสินใจที่ควบคุมให้วนกลับไปรับอีเมลใหม่จนกว่าจะได้อีเมลที่ยังไม่เคยสมัคร",
+};
+
+/* =====================================================================
+   2) UTIL — shuffle, timer
+===================================================================== */
+function shuffleArr(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+let examQuestions = [];   // สับเปลี่ยนลำดับข้อ + ตัวเลือกต่อคน
+let studentAnswers = {};  // {questionId: selectedOptionText}
+let timerInterval = null;
+let secondsLeft = 50*60;
+
+function buildExamQuestions(){
+  const shuffledQ = shuffleArr(RAW_QUESTIONS);
+  examQuestions = shuffledQ.map(q=>{
+    if(q.diagram && q.diagram.type === "pseudoToFlowchart"){
+      // ข้อ 25: ตัวเลือกเป็นแผนภาพ ไม่ใช่ข้อความ ไม่ต้องสับเปลี่ยนลำดับตัวเลือก
+      return Object.assign({}, q, {optOrder:[0,1,2,3]});
+    }
+    const idxArr = shuffleArr([0,1,2,3]);
+    return Object.assign({}, q, {optOrder:idxArr});
+  });
+}
+
+/* =====================================================================
+   3) FLOWCHART DIAGRAM RENDERERS (read-only, ตอนที่ 1)
+===================================================================== */
+function shapeDiv(type,text){
+  const cls = {terminal:"fcTerminal",process:"fcProcess",io:"fcIO",decision:"fcDecision"}[type];
+  return `<div class="fcShape ${cls}">${text}</div>`;
+}
+function arrowDiv(){ return `<div class="fcArrow"></div>`; }
+
+function renderSeqDiagram(){
+  const steps = [
+    {t:"terminal",x:"เริ่มต้น"},
+    {t:"process",x:"หยิบแปรงสีฟันและยาสีฟัน"},
+    {t:"process",x:"บีบยาสีฟันใส่แปรง"},
+    {t:"process",x:"แปรงฟันให้ทั่วปาก"},
+    {t:"process",x:"บ้วนปากด้วยน้ำสะอาด"},
+    {t:"process",x:"เก็บแปรงสีฟันเข้าที่"},
+    {t:"terminal",x:"สิ้นสุด"},
+  ];
+  let html = `<div class="fcWrap"><div class="fcChain">`;
+  steps.forEach((s,i)=>{
+    html += shapeDiv(s.t,s.x);
+    if(i<steps.length-1) html += arrowDiv();
+  });
+  html += `</div></div>`;
+  return html;
+}
+
+function renderBranchDiagram(){
+  let html = `<div class="fcWrap"><div class="fcChain">`;
+  html += shapeDiv("terminal","เริ่มต้น") + arrowDiv();
+  html += shapeDiv("io","รับข้อมูลว่าวันนี้ฝนตกหรือไม่") + arrowDiv();
+  html += shapeDiv("decision","ฝนตกหรือไม่ ?") + arrowDiv();
+  html += `<div class="fcBranchRow">
+      <div class="fcBranchCol"><div class="fcBranchLabel yes">ใช่</div>${shapeDiv("io","แสดงข้อความ กางร่ม")}</div>
+      <div class="fcBranchCol"><div class="fcBranchLabel no">ไม่ใช่</div>${shapeDiv("io","แสดงข้อความ เดินไปโรงเรียนตามปกติ")}</div>
+    </div>`;
+  html += `<div class="fcMergeBar" style="width:70%"></div>`;
+  html += arrowDiv();
+  html += shapeDiv("terminal","สิ้นสุด");
+  html += `</div></div>`;
+  return html;
+}
+
+function branchMini(order,label){
+  // order: 'normal' = ถูกต้อง, 'swap' = สลับ ใช่/ไม่ใช่ label
+  const yesTxt = order==='swap' ? "ยังไม่มีสิทธิ์เลือกตั้ง" : "มีสิทธิ์เลือกตั้ง";
+  const noTxt  = order==='swap' ? "มีสิทธิ์เลือกตั้ง" : "ยังไม่มีสิทธิ์เลือกตั้ง";
+  let html = `<div class="fcChain fcSmall">`;
+  html += shapeDiv("terminal","เริ่มต้น") + arrowDiv();
+  html += shapeDiv("io","รับค่าอายุ") + arrowDiv();
+  html += shapeDiv("decision","อายุ ≥ 18 ?") + arrowDiv();
+  html += `<div class="fcBranchRow">
+      <div class="fcBranchCol"><div class="fcBranchLabel yes">ใช่</div>${shapeDiv("io",yesTxt)}</div>
+      <div class="fcBranchCol"><div class="fcBranchLabel no">ไม่ใช่</div>${shapeDiv("io",noTxt)}</div>
+    </div>`;
+  html += `<div class="fcMergeBar" style="width:65%"></div>`;
+  html += arrowDiv();
+  html += shapeDiv("terminal","สิ้นสุด");
+  html += `</div>`;
+  return html;
+}
+function wrongOrderMini(kind){
+  let html = `<div class="fcChain fcSmall">`;
+  if(kind==='decisionFirst'){
+    html += shapeDiv("terminal","เริ่มต้น") + arrowDiv();
+    html += shapeDiv("decision","อายุ ≥ 18 ?") + arrowDiv();
+    html += shapeDiv("io","รับค่าอายุ") + arrowDiv();
+    html += shapeDiv("io","แสดงผล") + arrowDiv();
+    html += shapeDiv("terminal","สิ้นสุด");
+  } else { // outputFirst
+    html += shapeDiv("terminal","เริ่มต้น") + arrowDiv();
+    html += shapeDiv("io","รับค่าอายุ") + arrowDiv();
+    html += shapeDiv("io","แสดงมีสิทธิ์เลือกตั้ง") + arrowDiv();
+    html += shapeDiv("decision","อายุ ≥ 18 ?") + arrowDiv();
+    html += shapeDiv("terminal","สิ้นสุด");
+  }
+  html += `</div>`;
+  return html;
+}
+
+/* =====================================================================
+   4) RENDER PART 1
+===================================================================== */
+const thaiLetters = ["ก","ข","ค","ง"];
+
+function renderPart1(){
+  const container = document.getElementById("part1Container");
+  container.innerHTML = "";
+  examQuestions.forEach((q,qIndex)=>{
+    const card = document.createElement("div");
+    card.className = "qCard";
+    card.id = "qcard_"+q.id;
+
+    let inner = `<div class="qHead"><div class="qNum">${qIndex+1}</div><div class="qText">${q.text}</div></div>`;
+    if(q.scenario) inner += `<div class="qScenario">📌 สถานการณ์ — ${q.scenario}</div>`;
+    if(q.pseudo) inner += `<div class="qPseudo">${q.pseudo}</div>`;
+    if(q.diagram && q.diagram.type === "seq") inner += renderSeqDiagram();
+    if(q.diagram && q.diagram.type === "branch") inner += renderBranchDiagram();
+
+    card.innerHTML = inner;
+
+    if(q.diagram && q.diagram.type === "pseudoToFlowchart"){
+      // ตัวเลือกเป็นแผนภาพ 4 แบบ
+      const optGrid = document.createElement("div");
+      optGrid.className = "fcOptGrid";
+      const variants = [
+        {key:0, html: branchMini('normal')},          // ก - ถูกต้อง
+        {key:1, html: wrongOrderMini('decisionFirst')},// ข - ลำดับผิด
+        {key:2, html: wrongOrderMini('outputFirst')},  // ค - ลำดับผิด
+        {key:3, html: branchMini('swap')},             // ง - สลับป้าย
+      ];
+      variants.forEach((v,i)=>{
+        const optCard = document.createElement("div");
+        optCard.className = "fcOptCard";
+        optCard.innerHTML = `<div class="fcOptLabel"><span class="optLetter">${thaiLetters[i]}</span> ตัวเลือกที่ ${thaiLetters[i]}</div>${v.html}`;
+        optCard.addEventListener("click", ()=>{
+          selectAnswer(q, v.key, optGrid, true);
+        });
+        optCard.dataset.optKey = v.key;
+        optGrid.appendChild(optCard);
+      });
+      card.appendChild(optGrid);
+    } else {
+      const optList = document.createElement("div");
+      optList.className = "optList";
+      q.optOrder.forEach((origIdx,displayI)=>{
+        const optItem = document.createElement("div");
+        optItem.className = "optItem";
+        optItem.dataset.origIdx = origIdx;
+        optItem.innerHTML = `<div class="optLetter">${thaiLetters[displayI]}</div><div class="optText">${q.options[origIdx]}</div>`;
+        optItem.addEventListener("click", ()=>{
+          selectAnswer(q, origIdx, optList, false);
+        });
+        optList.appendChild(optItem);
+      });
+      card.appendChild(optList);
+    }
+
+    container.appendChild(card);
+  });
+}
+
+function selectAnswer(q, chosenOrigIdx, groupEl, isFcOpt){
+  studentAnswers[q.id] = chosenOrigIdx;
+  const card = document.getElementById("qcard_"+q.id);
+  card.classList.add("answered");
+  if(isFcOpt){
+    groupEl.querySelectorAll(".fcOptCard").forEach(el=>{
+      el.classList.toggle("selected", Number(el.dataset.optKey) === chosenOrigIdx);
+    });
+  } else {
+    groupEl.querySelectorAll(".optItem").forEach(el=>{
+      el.classList.toggle("selected", Number(el.dataset.origIdx) === chosenOrigIdx);
+    });
+  }
+  updateProgress();
+}
+
+function updateProgress(){
+  const answered = Object.keys(studentAnswers).length;
+  document.getElementById("submitStatus").textContent = `ตอบแล้ว ${answered} / 30 ข้อ`;
+  const pct = Math.round((answered/30)*100);
+  document.getElementById("progressBar").style.width = pct+"%";
+}
+
+/* =====================================================================
+   5) TIMER
+===================================================================== */
+function startTimer(){
+  timerInterval = setInterval(()=>{
+    secondsLeft--;
+    const m = Math.floor(secondsLeft/60);
+    const s = secondsLeft%60;
+    document.getElementById("timerText").textContent =
+      String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+    if(secondsLeft <= 300){
+      document.getElementById("timerBox").classList.add("low");
+    }
+    if(secondsLeft <= 0){
+      clearInterval(timerInterval);
+      forceSubmit();
+    }
+  },1000);
+}
+
+/* =====================================================================
+   6) PART 2 — DRAG & DROP CANVAS
+===================================================================== */
+let slots = {
+  s1:{type:null,text:null}, // เริ่มต้น
+  s2:{type:null,text:null}, // ตรวจสอบรายชื่อ
+  s3:{type:null,text:null}, // มีชื่อหรือไม่ (decision)
+  s4:{type:null,text:null}, // ไม่ใช่ -> แจ้งครู
+  s5:{type:null,text:null}, // ใช่ -> ขึ้นรถบัส
+  s6:{type:null,text:null}, // สิ้นสุด
+};
+const SLOT_ANSWER = {
+  s1:{type:"terminal",text:"เริ่มต้น"},
+  s2:{type:"io",text:"ตรวจสอบรายชื่อในใบอนุญาต"},
+  s3:{type:"decision",text:"มีชื่อในใบอนุญาตหรือไม่ ?"},
+  s4:{type:"io",text:"แจ้งครูแล้วรอผู้ปกครองติดต่อกลับ"},
+  s5:{type:"io",text:"ขึ้นรถบัสได้ทันที"},
+  s6:{type:"terminal",text:"สิ้นสุด"},
+};
+
+let selectedShape = null;
+let selectedText = null;
+
+function slotHtml(id){
+  const s = slots[id];
+  if(!s.type){
+    return `<div class="slotBox empty" data-slot="${id}">แตะเพื่อวางสัญลักษณ์</div>`;
+  }
+  const label = s.text || "แตะเพื่อใส่ข้อความ";
+  return `<div class="slotBox ${s.type}" data-slot="${id}">
+    ${label}
+    <button type="button" class="slotClear" data-clear="${id}">×</button>
+  </div>`;
+}
+
+function renderDiagram(){
+  const el = document.getElementById("p2Diagram");
+  el.innerHTML = `
+    <div class="slotChain">
+      ${slotHtml("s1")}
+      <div class="slotArrow"></div>
+      ${slotHtml("s2")}
+      <div class="slotArrow"></div>
+      ${slotHtml("s3")}
+      <div class="slotArrow"></div>
+      <div class="slotBranchRow">
+        <div class="slotBranchCol"><div class="slotBranchLabel no">ไม่ใช่</div>${slotHtml("s4")}</div>
+        <div class="slotBranchCol"><div class="slotBranchLabel yes">ใช่</div>${slotHtml("s5")}</div>
+      </div>
+      <div class="slotMergeBar"></div>
+      <div class="slotArrow"></div>
+      ${slotHtml("s6")}
+    </div>`;
+
+  el.querySelectorAll(".slotBox").forEach(box=>{
+    box.addEventListener("click", ()=> onSlotClick(box.dataset.slot));
+  });
+  el.querySelectorAll(".slotClear").forEach(btn=>{
+    btn.addEventListener("click", ev=>{
+      ev.stopPropagation();
+      const id = btn.dataset.clear;
+      slots[id] = {type:null,text:null};
+      renderDiagram();
+      updateTextTrayState();
+      updateSlotCount();
+    });
+  });
+  updateSlotCount();
+}
+
+function onSlotClick(id){
+  if(selectedShape){
+    slots[id].type = selectedShape;
+    setSelectedShape(null);
+    renderDiagram();
+    updateSlotCount();
+    return;
+  }
+  if(selectedText){
+    if(!slots[id].type){
+      showPickHint("กรุณาวางสัญลักษณ์ในช่องนี้ก่อน แล้วค่อยใส่ข้อความ");
+      return;
+    }
+    slots[id].text = selectedText;
+    setSelectedText(null);
+    renderDiagram();
+    updateTextTrayState();
+    updateSlotCount();
+    return;
+  }
+  showPickHint('เลือกสัญลักษณ์หรือข้อความจากด้านล่างก่อน แล้วค่อยแตะช่องนี้');
+}
+
+function setSelectedShape(shapeType){
+  selectedShape = shapeType;
+  selectedText = null;
+  document.querySelectorAll("#paletteBar .paletteShape").forEach(el=>{
+    el.classList.toggle("active", el.dataset.shape===shapeType);
+  });
+  document.querySelectorAll("#textTray .textChip").forEach(el=> el.classList.remove("active"));
+  if(shapeType){
+    showPickHint("กำลังถือสัญลักษณ์อยู่ — แตะช่องว่างในผังงานที่ต้องการวาง");
+  } else {
+    hidePickHint();
+  }
+}
+
+function setSelectedText(text){
+  selectedText = text;
+  selectedShape = null;
+  document.querySelectorAll("#textTray .textChip").forEach(el=>{
+    el.classList.toggle("active", el.dataset.text===text);
+  });
+  document.querySelectorAll("#paletteBar .paletteShape").forEach(el=> el.classList.remove("active"));
+  if(text){
+    showPickHint('กำลังถือข้อความ "'+text+'" อยู่ — แตะสัญลักษณ์ที่ต้องการใส่ป้ายกำกับ');
+  } else {
+    hidePickHint();
+  }
+}
+
+function showPickHint(msg){
+  const h = document.getElementById("pickHint");
+  h.textContent = "👆 "+msg;
+  h.classList.add("show");
+}
+function hidePickHint(){
+  document.getElementById("pickHint").classList.remove("show");
+}
+
+function updateTextTrayState(){
+  const usedTexts = Object.values(slots).map(s=>s.text).filter(Boolean);
+  document.querySelectorAll("#textTray .textChip").forEach(el=>{
+    el.classList.toggle("used", usedTexts.includes(el.dataset.text));
+  });
+}
+
+function updateSlotCount(){
+  const done = Object.values(slots).filter(s=>s.type && s.text).length;
+  document.getElementById("slotDoneCount").textContent = done;
+}
+
+function initPalette(){
+  document.querySelectorAll("#paletteBar .paletteShape").forEach(el=>{
+    el.addEventListener("click", ()=>{
+      setSelectedShape(selectedShape===el.dataset.shape ? null : el.dataset.shape);
+    });
+  });
+  document.querySelectorAll("#textTray .textChip").forEach(el=>{
+    el.addEventListener("click", ()=>{
+      if(el.classList.contains("used")) return;
+      setSelectedText(selectedText===el.dataset.text ? null : el.dataset.text);
+    });
+  });
+}
+
+function calcPart2Score(){
+  let score = 0;
+  const eq = (id,type,text)=> slots[id].type===type && slots[id].text===text;
+  if(slots.s1.type==="terminal" && slots.s6.type==="terminal") score += 1;
+  if(eq("s2",SLOT_ANSWER.s2.type,SLOT_ANSWER.s2.text)) score += 2;
+  if(eq("s3",SLOT_ANSWER.s3.type,SLOT_ANSWER.s3.text)) score += 2;
+  if(eq("s5",SLOT_ANSWER.s5.type,SLOT_ANSWER.s5.text)) score += 2;
+  if(eq("s4",SLOT_ANSWER.s4.type,SLOT_ANSWER.s4.text)) score += 2;
+  if(slots.s1.text==="เริ่มต้น" && slots.s6.text==="สิ้นสุด") score += 1;
+  return score;
+}
+
+/* =====================================================================
+   6b) PART 2 ข้อ 2 — นับถอยหลังปล่อยจรวด (ตัดสินใจ + ทำซ้ำ) 5 คะแนน
+   สถานะและ DOM query แยกอิสระจากข้อ 1 ทั้งหมด กันการชนกัน
+===================================================================== */
+let slotsB = {
+  r1:{type:null,text:null}, // เริ่มต้น
+  r2:{type:null,text:null}, // กำหนด count = 10
+  r3:{type:null,text:null}, // count >= 1 ? (decision)
+  r4:{type:null,text:null}, // จริง -> พิมพ์ค่า+ลด count (วนกลับ)
+  r5:{type:null,text:null}, // เท็จ -> สิ้นสุด
+};
+const SLOT_ANSWER_B = {
+  r1:{type:"terminal",text:"เริ่มต้น"},
+  r2:{type:"process",text:"กำหนด count = 10"},
+  r3:{type:"decision",text:"count ≥ 1 ?"},
+  r4:{type:"process",text:"พิมพ์ค่า count แล้ว ลด count ลง 1"},
+  r5:{type:"terminal",text:"สิ้นสุด (ปล่อยจรวด)"},
+};
+
+let selectedShapeB = null;
+let selectedTextB = null;
+
+function slotHtmlB(id){
+  const s = slotsB[id];
+  if(!s.type){
+    return `<div class="slotBox empty" data-slot="${id}">แตะเพื่อวางสัญลักษณ์</div>`;
+  }
+  const label = s.text || "แตะเพื่อใส่ข้อความ";
+  return `<div class="slotBox ${s.type}" data-slot="${id}">
+    ${label}
+    <button type="button" class="slotClear" data-clear="${id}">×</button>
+  </div>`;
+}
+
+function renderDiagramB(){
+  const el = document.getElementById("p2DiagramB");
+  el.innerHTML = `
+    <div class="slotChain">
+      ${slotHtmlB("r1")}
+      <div class="slotArrow"></div>
+      ${slotHtmlB("r2")}
+      <div class="slotArrow"></div>
+      ${slotHtmlB("r3")}
+      <div class="slotArrow"></div>
+      <div class="slotBranchRow">
+        <div class="slotBranchCol">
+          <div class="slotBranchLabel yes">จริง</div>
+          ${slotHtmlB("r4")}
+          <div class="loopBackNote">🔁 วนกลับไปตรวจสอบเงื่อนไข "count ≥ 1 ?" ใหม่ทุกครั้ง</div>
+        </div>
+        <div class="slotBranchCol"><div class="slotBranchLabel no">เท็จ</div>${slotHtmlB("r5")}</div>
+      </div>
+    </div>`;
+
+  el.querySelectorAll(".slotBox").forEach(box=>{
+    box.addEventListener("click", ()=> onSlotClickB(box.dataset.slot));
+  });
+  el.querySelectorAll(".slotClear").forEach(btn=>{
+    btn.addEventListener("click", ev=>{
+      ev.stopPropagation();
+      const id = btn.dataset.clear;
+      slotsB[id] = {type:null,text:null};
+      renderDiagramB();
+      updateTextTrayStateB();
+      updateSlotCountB();
+    });
+  });
+  updateSlotCountB();
+}
+
+function onSlotClickB(id){
+  if(selectedShapeB){
+    slotsB[id].type = selectedShapeB;
+    setSelectedShapeB(null);
+    renderDiagramB();
+    updateSlotCountB();
+    return;
+  }
+  if(selectedTextB){
+    if(!slotsB[id].type){
+      showPickHint("กรุณาวางสัญลักษณ์ในช่องนี้ก่อน แล้วค่อยใส่ข้อความ");
+      return;
+    }
+    slotsB[id].text = selectedTextB;
+    setSelectedTextB(null);
+    renderDiagramB();
+    updateTextTrayStateB();
+    updateSlotCountB();
+    return;
+  }
+  showPickHint('เลือกสัญลักษณ์หรือข้อความจากด้านล่างก่อน แล้วค่อยแตะช่องนี้');
+}
+
+function setSelectedShapeB(shapeType){
+  selectedShapeB = shapeType;
+  selectedTextB = null;
+  document.querySelectorAll("#paletteBarB .paletteShape").forEach(el=>{
+    el.classList.toggle("active", el.dataset.shape===shapeType);
+  });
+  document.querySelectorAll("#textTrayB .textChip").forEach(el=> el.classList.remove("active"));
+  if(shapeType){
+    showPickHint("กำลังถือสัญลักษณ์อยู่ — แตะช่องว่างในผังงานที่ต้องการวาง");
+  } else {
+    hidePickHint();
+  }
+}
+
+function setSelectedTextB(text){
+  selectedTextB = text;
+  selectedShapeB = null;
+  document.querySelectorAll("#textTrayB .textChip").forEach(el=>{
+    el.classList.toggle("active", el.dataset.text===text);
+  });
+  document.querySelectorAll("#paletteBarB .paletteShape").forEach(el=> el.classList.remove("active"));
+  if(text){
+    showPickHint('กำลังถือข้อความ "'+text+'" อยู่ — แตะสัญลักษณ์ที่ต้องการใส่ป้ายกำกับ');
+  } else {
+    hidePickHint();
+  }
+}
+
+function updateTextTrayStateB(){
+  const usedTexts = Object.values(slotsB).map(s=>s.text).filter(Boolean);
+  document.querySelectorAll("#textTrayB .textChip").forEach(el=>{
+    el.classList.toggle("used", usedTexts.includes(el.dataset.text));
+  });
+}
+
+function updateSlotCountB(){
+  const done = Object.values(slotsB).filter(s=>s.type && s.text).length;
+  document.getElementById("slotDoneCountB").textContent = done;
+}
+
+function initPaletteB(){
+  document.querySelectorAll("#paletteBarB .paletteShape").forEach(el=>{
+    el.addEventListener("click", ()=>{
+      setSelectedShapeB(selectedShapeB===el.dataset.shape ? null : el.dataset.shape);
+    });
+  });
+  document.querySelectorAll("#textTrayB .textChip").forEach(el=>{
+    el.addEventListener("click", ()=>{
+      if(el.classList.contains("used")) return;
+      setSelectedTextB(selectedTextB===el.dataset.text ? null : el.dataset.text);
+    });
+  });
+}
+
+function calcPart2ScoreB(){
+  let score = 0;
+  const eq = (id,type,text)=> slotsB[id].type===type && slotsB[id].text===text;
+  if(eq("r1",SLOT_ANSWER_B.r1.type,SLOT_ANSWER_B.r1.text)) score += 1;
+  if(eq("r2",SLOT_ANSWER_B.r2.type,SLOT_ANSWER_B.r2.text)) score += 1;
+  if(eq("r3",SLOT_ANSWER_B.r3.type,SLOT_ANSWER_B.r3.text)) score += 1;
+  if(eq("r4",SLOT_ANSWER_B.r4.type,SLOT_ANSWER_B.r4.text)) score += 1;
+  if(eq("r5",SLOT_ANSWER_B.r5.type,SLOT_ANSWER_B.r5.text)) score += 1;
+  return score;
+}
+
+document.addEventListener("DOMContentLoaded", ()=>{
+  initPalette();
+  renderDiagram();
+  initPaletteB();
+  renderDiagramB();
+  document.getElementById("p2ResetBtn").addEventListener("click", ()=>{
+    if(confirm("ต้องการล้างผังงานทั้งหมดหรือไม่")){
+      Object.keys(slots).forEach(k=> slots[k]={type:null,text:null});
+      setSelectedShape(null); setSelectedText(null);
+      renderDiagram();
+      updateTextTrayState();
+    }
+  });
+  document.getElementById("p2ResetBtnB").addEventListener("click", ()=>{
+    if(confirm("ต้องการล้างผังงานทั้งหมดหรือไม่")){
+      Object.keys(slotsB).forEach(k=> slotsB[k]={type:null,text:null});
+      setSelectedShapeB(null); setSelectedTextB(null);
+      renderDiagramB();
+      updateTextTrayStateB();
+    }
+  });
+});
+
+/* =====================================================================
+   7) COVER SCREEN → START EXAM
+===================================================================== */
+function checkCoverForm(){
+  const f = document.getElementById("stuFirst").value.trim();
+  const l = document.getElementById("stuLast").value.trim();
+  const btn = document.getElementById("startBtn");
+  if(f && l){
+    btn.disabled=false;
+    btn.textContent="🚀 เริ่มทำข้อสอบ";
+  } else {
+    btn.disabled=true;
+    btn.textContent="กรอกชื่อ-นามสกุลให้ครบก่อนเริ่มทำข้อสอบ";
+  }
+}
+["stuFirst","stuLast"].forEach(id=>{
+  document.getElementById(id).addEventListener("input", checkCoverForm);
+});
+
+document.getElementById("startBtn").addEventListener("click", ()=>{
+  buildExamQuestions();
+  renderPart1();
+  renderDiagram();
+  renderDiagramB();
+  document.getElementById("coverScreen").classList.add("hidden");
+  document.getElementById("examScreen").classList.remove("hidden");
+  document.getElementById("topbar").classList.remove("hidden");
+  startTimer();
+  window.scrollTo(0,0);
+});
+
+/* =====================================================================
+   8) SUBMIT VALIDATION
+===================================================================== */
+function validateBeforeSubmit(){
+  const problems = [];
+  const answered = Object.keys(studentAnswers).length;
+  if(answered < 30){
+    problems.push(`ตอนที่ 1 ยังตอบไม่ครบ ตอบแล้ว ${answered}/30 ข้อ`);
+  }
+  const doneCount = Object.values(slots).filter(s=>s.type && s.text).length;
+  if(doneCount < 6){
+    problems.push(`ตอนที่ 2 ข้อ 1 ยังเติมผังงานไม่ครบ เติมแล้ว ${doneCount}/6 ช่อง กรุณาวางสัญลักษณ์และใส่ข้อความให้ครบทุกช่อง`);
+  }
+  const doneCountB = Object.values(slotsB).filter(s=>s.type && s.text).length;
+  if(doneCountB < 5){
+    problems.push(`ตอนที่ 2 ข้อ 2 ยังเติมผังงานไม่ครบ เติมแล้ว ${doneCountB}/5 ช่อง กรุณาวางสัญลักษณ์และใส่ข้อความให้ครบทุกช่อง`);
+  }
+  return problems;
+}
+
+document.getElementById("submitBtn").addEventListener("click", ()=>{
+  const problems = validateBeforeSubmit();
+  if(problems.length>0){
+    showModal(problems);
+    return;
+  }
+  finishExam();
+});
+
+function showModal(problems){
+  const list = document.getElementById("modalList");
+  list.innerHTML = "";
+  problems.forEach(p=>{
+    const li = document.createElement("li");
+    li.textContent = p;
+    list.appendChild(li);
+  });
+  document.getElementById("modalOverlay").classList.remove("hidden");
+}
+document.getElementById("modalOkBtn").addEventListener("click", ()=>{
+  document.getElementById("modalOverlay").classList.add("hidden");
+});
+
+function forceSubmit(){
+  finishExam(true);
+}
+
+function finishExam(timeUp){
+  clearInterval(timerInterval);
+  let score = 0;
+  examQuestions.forEach(q=>{
+    if(studentAnswers[q.id] === q.correctIndex) score++;
+  });
+  const p2score = calcPart2Score();
+  const p2scoreB = calcPart2ScoreB();
+  document.getElementById("scoreVal").textContent = score;
+  document.getElementById("scoreVal2").textContent = p2score;
+  document.getElementById("scoreVal2B").textContent = p2scoreB;
+  document.getElementById("scoreValTotal").textContent = score + p2score + p2scoreB;
+  const fn = document.getElementById("stuFirst").value.trim();
+  const ln = document.getElementById("stuLast").value.trim();
+  const cls = document.getElementById("stuClass").value.trim();
+  const no = document.getElementById("stuNo").value.trim();
+  document.getElementById("stuNameDisplay").textContent =
+    `${fn} ${ln}${cls?(" · "+cls):""}${no?(" เลขที่ "+no):""}${timeUp?" · ส่งอัตโนมัติเมื่อหมดเวลา":""}`;
+
+  document.getElementById("examScreen").classList.add("hidden");
+  document.getElementById("topbar").classList.add("hidden");
+  document.getElementById("resultScreen").classList.remove("hidden");
+  window.scrollTo(0,0);
+}
+
+/* =====================================================================
+   9) ANSWER KEY GATE (password 6767, client-side only)
+===================================================================== */
+document.getElementById("keyPassBtn").addEventListener("click", ()=>{
+  const val = document.getElementById("keyPassInput").value.trim();
+  if(val === "6767"){
+    document.getElementById("keyGate").classList.add("hidden");
+    renderAnswerKey();
+    document.getElementById("answerKeyList").classList.remove("hidden");
+  } else {
+    document.getElementById("keyPassError").textContent = "รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง";
+  }
+});
+
+function renderAnswerKey(){
+  const wrap = document.getElementById("answerKeyList");
+  wrap.innerHTML = `<h3 style="margin-bottom:10px;color:var(--line);">เฉลยตอนที่ 1 เรียงตามลำดับที่นักเรียนทำจริง</h3>`;
+  examQuestions.forEach((q,i)=>{
+    const correctText = q.diagram && q.diagram.type==="pseudoToFlowchart"
+      ? "ตัวเลือกที่ ก"
+      : (thaiLetters[q.optOrder.indexOf(q.correctIndex)] + ". " + q.options[q.correctIndex]);
+    const studentPick = studentAnswers[q.id];
+    const isCorrect = studentPick === q.correctIndex;
+    const row = document.createElement("div");
+    row.className = "keyRow";
+    row.innerHTML = `<b>ข้อ ${i+1}.</b> ${q.text}<br>
+      เฉลย: <b>${correctText}</b>
+      ${isCorrect ? "" : `<span class="wrongTag"> · คำตอบของนักเรียน: ${studentPick===undefined?"ไม่ได้ตอบ":"ผิด"}</span>`}
+      <br><span style="color:var(--ink-soft);font-size:13px;">💡 ${EXPLAIN[q.id]||""}</span>`;
+    wrap.appendChild(row);
+  });
+  const rubric = document.createElement("div");
+  rubric.className = "keyRow";
+  const shapeName = {terminal:"เริ่มต้น/สิ้นสุด",process:"ประมวลผล",io:"รับ/แสดงผล",decision:"ตัดสินใจ"};
+  const rowsInfo = [
+    {id:"s1", label:"ช่องที่ 1"},
+    {id:"s2", label:"ช่องที่ 2"},
+    {id:"s3", label:"ช่องที่ 3 (ตัดสินใจ)"},
+    {id:"s4", label:"ช่องที่ 4 (เส้นทางไม่ใช่)"},
+    {id:"s5", label:"ช่องที่ 5 (เส้นทางใช่)"},
+    {id:"s6", label:"ช่องที่ 6"},
+  ];
+  let slotRows = "";
+  rowsInfo.forEach(r=>{
+    const ans = SLOT_ANSWER[r.id];
+    const got = slots[r.id];
+    const ok = got.type===ans.type && got.text===ans.text;
+    slotRows += `<div style="padding:6px 0;border-bottom:1px dashed #dbe3ee;">
+      <b>${r.label}</b> — เฉลย: ${shapeName[ans.type]} "${ans.text}"
+      ${ok ? '<span style="color:var(--green);font-weight:700;"> ✓ ถูกต้อง</span>' : `<span class="wrongTag"> ✗ นักเรียนวาง: ${got.type?shapeName[got.type]:"ยังไม่วาง"}${got.text?(' "'+got.text+'"'):""}</span>`}
+      </div>`;
+  });
+  rubric.innerHTML = `<b>ตอนที่ 2 ข้อ 1 เฉลยผังงาน — ระบบเช็คอินก่อนขึ้นรถบัสทัศนศึกษา (ได้ ${calcPart2Score()} / 10 คะแนน)</b>
+    <div style="margin-top:8px;">${slotRows}</div>
+    <div style="margin-top:8px;font-size:13px;color:var(--ink-soft);">
+      เกณฑ์: เริ่มต้น/สิ้นสุดถูกต้อง = 1 · ตรวจสอบรายชื่อ = 2 · ตัดสินใจ = 2 · เส้นทางใช่ = 2 · เส้นทางไม่ใช่ = 2 · ข้อความเริ่มต้น/สิ้นสุดถูกต้อง = 1
+    </div>`;
+  wrap.appendChild(rubric);
+
+  const rubricB = document.createElement("div");
+  rubricB.className = "keyRow";
+  const rowsInfoB = [
+    {id:"r1", label:"ช่องที่ 1"},
+    {id:"r2", label:"ช่องที่ 2"},
+    {id:"r3", label:"ช่องที่ 3 (ตัดสินใจ)"},
+    {id:"r4", label:"ช่องที่ 4 (เส้นทางจริง — วนกลับ)"},
+    {id:"r5", label:"ช่องที่ 5 (เส้นทางเท็จ)"},
+  ];
+  let slotRowsB = "";
+  rowsInfoB.forEach(r=>{
+    const ans = SLOT_ANSWER_B[r.id];
+    const got = slotsB[r.id];
+    const ok = got.type===ans.type && got.text===ans.text;
+    slotRowsB += `<div style="padding:6px 0;border-bottom:1px dashed #dbe3ee;">
+      <b>${r.label}</b> — เฉลย: ${shapeName[ans.type]} "${ans.text}"
+      ${ok ? '<span style="color:var(--green);font-weight:700;"> ✓ ถูกต้อง</span>' : `<span class="wrongTag"> ✗ นักเรียนวาง: ${got.type?shapeName[got.type]:"ยังไม่วาง"}${got.text?(' "'+got.text+'"'):""}</span>`}
+      </div>`;
+  });
+  rubricB.innerHTML = `<b>ตอนที่ 2 ข้อ 2 เฉลยผังงาน — นับถอยหลังปล่อยจรวดจำลอง (ได้ ${calcPart2ScoreB()} / 5 คะแนน)</b>
+    <div style="margin-top:8px;">${slotRowsB}</div>
+    <div style="margin-top:8px;font-size:13px;color:var(--ink-soft);">
+      เกณฑ์: แต่ละช่องถูกต้องทั้งสัญลักษณ์และข้อความ = 1 คะแนน รวม 5 ช่อง
+    </div>`;
+  wrap.appendChild(rubricB);
+}
+</script>
+</body>
+</html>
